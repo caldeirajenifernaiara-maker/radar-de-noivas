@@ -1,0 +1,150 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Radar de Noivas — V5</title>
+<style>
+body{margin:0;background:#f7efeb;font-family:Arial,sans-serif;color:#403836}main{max-width:540px;margin:auto;padding:18px 16px 60px}
+h1{font-size:23px;margin:0}.sub{font-size:12px;color:#766b68;margin:5px 0 16px}
+.card{background:#fff;border:1px solid #ead8d0;border-radius:20px;padding:15px;margin:12px 0;box-shadow:0 5px 18px #0000000d}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.stat{background:#fffaf8;border-radius:14px;padding:11px}.stat b{display:block;font-size:21px}.stat span{font-size:10px;color:#766b68}
+.tabs{display:flex;gap:7px;overflow:auto;margin:10px 0}.tab{border:0;border-radius:99px;padding:9px 12px;background:#eadbd5;color:#5c4c47;font-weight:700;font-size:11px}.tab.active{background:#b98a68;color:white}
+.section{font-size:15px;font-weight:800;margin:20px 0 8px}.lead{background:#fff;border:1px solid #ead8d0;border-radius:18px;padding:14px;margin:9px 0}.top{display:flex;justify-content:space-between}.name{font-weight:800}.city{font-size:11px;color:#807572;margin-top:3px}.score{font-size:20px;font-weight:800}.hot{color:#a64d35}.warm{color:#b56e32}.mid{color:#9b7a34}.low{color:#777}.chips{display:flex;gap:5px;flex-wrap:wrap;margin:9px 0}.chip{font-size:10px;padding:6px 8px;border-radius:99px;background:#f7eeeb}.why{font-size:12px;line-height:1.45;color:#5f5552}.actions{display:flex;gap:6px;margin-top:10px}.btn{flex:1;border:0;border-radius:11px;padding:10px;font-size:11px;font-weight:700;background:#b98a68;color:#fff}.alt{background:#f0e1dc;color:#654f47}
+input,select{width:100%;box-sizing:border-box;padding:10px;border:1px solid #dfcec7;border-radius:10px;background:#fff;margin:5px 0 9px}label{font-size:11px;font-weight:700}
+.weights{display:grid;grid-template-columns:1fr 55px;gap:8px;align-items:center;margin:10px 0}.weights input{margin:0}.weights b{text-align:right}
+.bar{height:10px;border-radius:99px;background:#eee0db;overflow:hidden}.fill{height:100%;background:#b98a68}
+.hidden{display:none}.notice{font-size:11px;background:#fff8f4;border-left:4px solid #b98a68;padding:10px;border-radius:9px;line-height:1.4}
+</style></head><body><main>
+<h1>🎯 Radar de Noivas</h1><div class="sub">Versão 5 • teste de captação + CRM + aprendizado</div>
+<div class="tabs"><button class="tab active" onclick="show('radar',this)">🔎 Radar</button><button class="tab" onclick="show('dashboard',this)">Dashboard</button><button class="tab" onclick="show('loja',this)">Minha loja</button><button class="tab" onclick="show('leads',this)">Leads</button><button class="tab" onclick="show('ia',this)">IA</button><button class="tab" onclick="show('resultados',this)">Resultados</button></div>
+
+<section id="radar"><div class="section">🔎 Encontrar possíveis clientes</div><div class="card"><div class="sub"><b>Radar particular da Quase Casados.</b> Use os filtros para testar a lógica de prospecção.</div><label>📍 Região</label><div class="chips" id="regions"><button class="chip" data-v="Goiânia" onclick="toggleChip(this)">Goiânia</button><button class="chip" data-v="Aparecida de Goiânia" onclick="toggleChip(this)">Aparecida</button><button class="chip" data-v="Senador Canedo" onclick="toggleChip(this)">Senador Canedo</button><button class="chip" data-v="Trindade" onclick="toggleChip(this)">Trindade</button></div><label>💍 Sinais</label><div class="chips" id="signals"><button class="chip" data-v="Vestidos de noiva" onclick="toggleChip(this)">👰 Vestidos</button><button class="chip" data-v="Cartórios" onclick="toggleChip(this)">🏛️ Cartórios</button><button class="chip" data-v="Cerimonialistas" onclick="toggleChip(this)">💒 Cerimonial</button><button class="chip" data-v="Espaços/chácaras" onclick="toggleChip(this)">🏡 Espaços</button><button class="chip" data-v="Maquiadoras" onclick="toggleChip(this)">💄 Maquiadoras</button><button class="chip" data-v="Fotógrafos" onclick="toggleChip(this)">📸 Fotógrafos</button></div><label>🕐 Recência</label><select id="days"><option value="7">Últimos 7 dias</option><option value="15">Últimos 15 dias</option><option value="30" selected>Últimos 30 dias</option></select><button class="btn" style="width:100%;margin-top:4px" onclick="runRadar()">🔥 Analisar oportunidades</button></div><div id="radarResult" class="card" style="display:none"><b>Oportunidades</b><div class="sub">Resultados fictícios nesta versão. A integração real será feita somente por meios autorizados.</div><div id="radarList"></div></div><div class="notice">🔒 Nunca informe sua senha do Instagram. Esta versão não acessa seguidores de terceiros nem envia mensagens automaticamente.</div></section>
+<section id="dashboard">
+<div class="card"><b>Resumo do teste</b><div class="grid" style="margin-top:10px">
+<div class="stat"><b id="n">10</b><span>Oportunidades</span></div><div class="stat"><b id="hot">0</b><span>Muito quentes</span></div><div class="stat"><b id="cont">0</b><span>Contatadas</span></div><div class="stat"><b id="book">0</b><span>Agendadas</span></div><div class="stat"><b id="rent">0</b><span>Locações</span></div><div class="stat"><b id="conv">0%</b><span>Conversão</span></div>
+</div></div>
+<div class="notice">💡 O objetivo desta fase é descobrir quais sinais geram clientes de verdade. Quanto mais resultados você registrar, melhor poderemos ajustar a pontuação.</div>
+</section>
+
+
+<section id="loja" class="hidden">
+<div class="section">🏷️ Cadastro da Quase Casados</div>
+<div class="card">
+<div class="sub">Essas informações serão usadas pelo Radar para personalizar a busca e a pontuação dos leads.</div>
+
+<label>Nome da loja</label>
+<input id="lojaNome" value="Quase Casados">
+
+<label>Cidade</label>
+<input id="lojaCidade" value="Goiânia">
+
+<label>Instagram da loja</label>
+<input id="lojaInstagram" value="@quasecasados">
+
+<label>O que você oferece?</label>
+<select id="lojaCategoria">
+<option>Vestidos de noiva</option>
+<option>Vestidos para casamento civil</option>
+<option>Moda festa</option>
+<option>Daminhas</option>
+<option>Debutante / 15 anos</option>
+<option>Acessórios</option>
+<option>Produção de penteado e maquiagem</option>
+</select>
+
+<label>Seu diferencial</label>
+<input id="lojaDiferencial" value="Locação com preço único por categoria em Goiânia">
+
+<label>Cidades para encontrar oportunidades</label>
+<input id="lojaRegiao" value="Goiânia, Aparecida de Goiânia, Senador Canedo e Trindade">
+
+<button class="btn" style="width:100%;margin-top:5px" onclick="saveStore()">Salvar cadastro</button>
+<div id="storeSaved" class="notice" style="display:none;margin-top:10px">✅ Cadastro salvo neste aparelho.</div>
+</div>
+
+<div class="notice">🔒 Não coloque senha do Instagram aqui. O Radar deve usar apenas integrações e dados autorizados.</div>
+</section>
+
+<section id="leads" class="hidden"><div class="section">Oportunidades</div><div id="list"></div></section>
+
+<section id="ia" class="hidden"><div class="section">⚙️ Configuração da IA</div>
+<div class="card"><div class="sub">Ajuste os pesos e veja a pontuação mudar. A soma deve ser 100.</div>
+<div class="weights"><label>Vestido de noiva</label><input id="w0" type="number" min="0" max="100" value="35"><b id="v0">35</b></div>
+<div class="weights"><label>Fornecedor casamento</label><input id="w1" type="number" min="0" max="100" value="20"><b id="v1">20</b></div>
+<div class="weights"><label>Atividade recente</label><input id="w2" type="number" min="0" max="100" value="20"><b id="v2">20</b></div>
+<div class="weights"><label>Região compatível</label><input id="w3" type="number" min="0" max="100" value="15"><b id="v3">15</b></div>
+<div class="weights"><label>Múltiplos sinais</label><input id="w4" type="number" min="0" max="100" value="10"><b id="v4">10</b></div>
+<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin:12px 0 6px"><span>Total</span><span id="wt">100</span></div><div class="bar"><div id="bar" class="fill" style="width:100%"></div></div>
+<button class="btn" style="width:100%;margin-top:12px" onclick="saveWeights()">Salvar pesos</button></div>
+</section>
+
+<section id="resultados" class="hidden"><div class="section">📈 Aprendizado com resultados</div>
+<div class="card"><b>O que aconteceu com os leads?</b><div class="grid" style="margin-top:10px">
+<div class="stat"><b id="rcont">0</b><span>Contatos</span></div><div class="stat"><b id="rresp">0</b><span>Respostas</span></div><div class="stat"><b id="rbook">0</b><span>Agendamentos</span></div><div class="stat"><b id="rrent">0</b><span>Locações</span></div>
+</div></div>
+<div class="card"><b>Regra de aprendizado</b><p style="font-size:12px;color:#766b68;line-height:1.5">Nesta versão, os resultados ficam registrados no protótipo. Depois, podemos usar esses dados para descobrir quais sinais têm maior relação com agendamento e locação.</p></div>
+</section>
+</main>
+<script>
+let weights=[35,20,20,15,10];
+let leads=[
+{name:"Mariana",city:"Goiânia",s:[1,1,1,1,1],status:"novo"},
+{name:"Camila",city:"Aparecida de Goiânia",s:[1,1,1,1,0],status:"novo"},
+{name:"Beatriz",city:"Goiânia",s:[1,0,1,1,0],status:"novo"},
+{name:"Larissa",city:"Senador Canedo",s:[1,1,0,1,1],status:"novo"},
+{name:"Juliana",city:"Goiânia",s:[0,1,1,1,0],status:"novo"},
+{name:"Amanda",city:"Trindade",s:[1,0,0,1,0],status:"novo"},
+{name:"Isabela",city:"Goiânia",s:[0,1,1,1,1],status:"novo"},
+{name:"Fernanda",city:"Outra região",s:[1,0,1,0,0],status:"novo"},
+{name:"Rafaela",city:"Aparecida de Goiânia",s:[1,1,0,1,0],status:"novo"},
+{name:"Patrícia",city:"Goiânia",s:[0,0,1,1,0],status:"novo"}];
+function score(l){return Math.min(100,l.s.reduce((a,v,i)=>a+(v?weights[i]:0),0))}
+function label(s){return s>=90?"🔥 Muito quente":s>=70?"🔥 Quente":s>=50?"🟠 Possível":"⚪ Baixa intenção"}
+function cls(s){return s>=90?"hot":s>=70?"warm":s>=50?"mid":"low"}
+function why(l){let a=["Interesse em vestido de noiva","Fornecedor de casamento","Atividade recente","Região compatível","Múltiplos sinais"];return a.filter((_,i)=>l.s[i]).join(" • ")||"Poucos sinais"}
+function render(){
+ leads.sort((a,b)=>score(b)-score(a));
+ document.getElementById("list").innerHTML=leads.map((l,i)=>`<div class="lead"><div class="top"><div><div class="name">${l.name}</div><div class="city">${l.city}</div></div><div class="score ${cls(score(l))}">${score(l)}</div></div><div class="chips"><span class="chip">${label(score(l))}</span><span class="chip">${l.status==="novo"?"Novo":l.status}</span></div><div class="why"><b>Por que a IA escolheu:</b> ${why(l)}</div><div class="actions"><button class="btn" onclick="setStatus(${i},'contatada',this)">Contatar</button><button class="btn alt" onclick="setStatus(${i},'respondeu',this)">Respondeu</button><button class="btn alt" onclick="setStatus(${i},'agendou',this)">Agendou</button><button class="btn alt" onclick="setStatus(${i},'alugou',this)">Alugou</button></div></div>`).join("");
+ update();
+}
+function setStatus(i,s,b){leads[i].status=s;b.textContent="✓ "+s.charAt(0).toUpperCase()+s.slice(1);b.disabled=true;render()}
+function update(){
+ document.getElementById("n").textContent=leads.length;document.getElementById("hot").textContent=leads.filter(l=>score(l)>=90).length;
+ let c=leads.filter(l=>["contatada","respondeu","agendou","alugou"].includes(l.status)).length;
+ let r=leads.filter(l=>["respondeu","agendou","alugou"].includes(l.status)).length;
+ let b=leads.filter(l=>["agendou","alugou"].includes(l.status)).length;
+ let rent=leads.filter(l=>l.status==="alugou").length;
+ document.getElementById("cont").textContent=c;document.getElementById("book").textContent=b;document.getElementById("rent").textContent=rent;document.getElementById("conv").textContent=(leads.length?(rent/leads.length*100).toFixed(0):0)+"%";
+ document.getElementById("rcont").textContent=c;document.getElementById("rresp").textContent=r;document.getElementById("rbook").textContent=b;document.getElementById("rrent").textContent=rent;
+}
+function show(id,btn){["radar","dashboard","loja","leads","ia","resultados"].forEach(x=>document.getElementById(x).classList.toggle("hidden",x!==id));document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));btn.classList.add("active");render()}
+function refreshWeights(){weights=[0,1,2,3,4].map(i=>+document.getElementById("w"+i).value||0);let t=weights.reduce((a,b)=>a+b,0);document.getElementById("wt").textContent=t;document.getElementById("bar").style.width=Math.min(t,100)+"%";weights.forEach((v,i)=>document.getElementById("v"+i).textContent=v);render()}
+
+function toggleChip(el){el.classList.toggle("selected")} function selectedValues(id){return [...document.querySelectorAll("#"+id+" .chip.selected")].map(x=>x.dataset.v)} function runRadar(){const regions=selectedValues("regions"),signals=selectedValues("signals"),days=+document.getElementById("days").value;const data=[["Possível cliente 01","Goiânia",["Vestidos de noiva","Cerimonialistas"],6],["Possível cliente 02","Aparecida de Goiânia",["Cartórios","Vestidos de noiva"],9],["Possível cliente 03","Goiânia",["Maquiadoras","Fotógrafos"],14],["Possível cliente 04","Senador Canedo",["Espaços/chácaras","Cerimonialistas"],18],["Possível cliente 05","Trindade",["Cartórios"],25]];let a=data.filter(x=>(!regions.length||regions.includes(x[1]))&&(!signals.length||x[2].some(s=>signals.includes(s)))&&x[3]<=days);if(!a.length)a=data.filter(x=>x[3]<=days);document.getElementById("radarResult").style.display="block";document.getElementById("radarList").innerHTML=a.map(x=>{let s=Math.max(20,100-x[3]*2+(x[2].length-1)*8);return `<div class="lead"><div class="top"><div><div class="name">${x[0]}</div><div class="city">📍 ${x[1]} • sinal há ${x[3]} dias</div></div><div class="score">${s}/100</div></div><div class="chips"><span class="chip">${s>=80?"🔥 Alta prioridade":s>=60?"🟠 Potencial":"⚪ Baixa prioridade"}</span>${x[2].map(z=>`<span class="chip">${z}</span>`).join("")}</div><div class="why"><b>Motivo:</b> recência + sinais relacionados a casamento + região.</div></div>`}).join("")}
+function saveStore(){
+ const data={
+  nome:document.getElementById("lojaNome").value,
+  cidade:document.getElementById("lojaCidade").value,
+  instagram:document.getElementById("lojaInstagram").value,
+  categoria:document.getElementById("lojaCategoria").value,
+  diferencial:document.getElementById("lojaDiferencial").value,
+  regiao:document.getElementById("lojaRegiao").value
+ };
+ localStorage.setItem("quaseCasadosStore",JSON.stringify(data));
+ document.getElementById("storeSaved").style.display="block";
+ setTimeout(()=>document.getElementById("storeSaved").style.display="none",2500);
+}
+function loadStore(){
+ try{
+  const d=JSON.parse(localStorage.getItem("quaseCasadosStore")||"null");
+  if(!d)return;
+  document.getElementById("lojaNome").value=d.nome||"";
+  document.getElementById("lojaCidade").value=d.cidade||"";
+  document.getElementById("lojaInstagram").value=d.instagram||"";
+  document.getElementById("lojaCategoria").value=d.categoria||"Vestidos de noiva";
+  document.getElementById("lojaDiferencial").value=d.diferencial||"";
+  document.getElementById("lojaRegiao").value=d.regiao||"";
+ }catch(e){}
+}
+
+function saveWeights(){refreshWeights();let t=weights.reduce((a,b)=>a+b,0);alert(t===100?"Pesos salvos!":"A soma precisa ser 100 pontos.");}
+[0,1,2,3,4].forEach(i=>document.getElementById("w"+i).addEventListener("input",refreshWeights));
+loadStore();
+render();
+</script></body></html>
