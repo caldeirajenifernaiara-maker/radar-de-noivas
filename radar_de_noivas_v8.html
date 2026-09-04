@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#b98a68">
+<title>Radar de Noivas — V8</title>
+<style>
+:root{
+  --bg:#f7efeb;--card:#fff;--ink:#403836;--muted:#766b68;
+  --line:#ead8d0;--accent:#b98a68;--accent2:#eadbd5;--soft:#f7eeeb;
+  --green:#648b73;--orange:#b56e32;--red:#a85d5d;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:var(--ink)}
+main{max-width:680px;margin:auto;padding:18px 16px 70px}
+h1{font-size:28px;margin:0}.sub{color:var(--muted);margin:5px 0 16px}
+.tabs{display:flex;gap:7px;overflow:auto;margin:10px 0 24px;padding-bottom:3px}
+.tab{border:0;border-radius:99px;padding:11px 15px;background:var(--accent2);color:#5c4c47;font-weight:700;white-space:nowrap}
+.tab.active{background:var(--accent);color:white}
+section{margin:20px 0}.section-title{font-size:19px;font-weight:800;margin-bottom:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;margin:12px 0;box-shadow:0 5px 18px #0000000b}
+label{font-size:12px;font-weight:700;display:block;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #dfcec7;border-radius:11px;background:#fff;font:inherit;color:var(--ink)}
+textarea{min-height:80px;resize:vertical}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:7px 0}
+.chip{border:0;border-radius:99px;padding:8px 10px;background:var(--soft);color:#5c4c47}
+.chip.on{background:var(--accent);color:#fff}
+.btn{width:100%;border:0;border-radius:12px;padding:12px;font-size:14px;font-weight:800;background:var(--accent);color:#fff;margin-top:10px}
+.btn.secondary{background:#eee2dc;color:#5c4c47}
+.btn.danger{background:#f2dede;color:#8c4848}
+.stat{background:#fffaf8;border:1px solid var(--line);border-radius:15px;padding:12px}
+.stat b{display:block;font-size:22px}.stat span{font-size:11px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lead-top{display:flex;justify-content:space-between;gap:10px}.score{font-size:22px;font-weight:900}
+.name{font-size:17px;font-weight:800}.city{font-size:12px;color:#807572;margin-top:3px}
+.badge{display:inline-block;padding:6px 9px;border-radius:99px;background:var(--soft);font-size:11px;margin:4px 3px 0 0}
+.hot{color:var(--orange);font-weight:800}.warm{color:#9b7434;font-weight:800}.low{color:#777;font-weight:800}
+.row{display:flex;gap:7px}.row>*{flex:1}
+.hidden{display:none!important}
+.note{font-size:12px;line-height:1.45;color:#5f5552}
+.small{font-size:11px;color:var(--muted)}
+.kpi{font-size:13px;font-weight:700;margin-top:7px}
+.actions{display:flex;gap:7px;margin-top:10px}.actions .btn{margin:0}
+.empty{text-align:center;color:var(--muted);padding:18px}
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+@media(max-width:430px){main{padding:16px 12px 60px}.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr 1fr}h1{font-size:26px}}
+</style>
+</head>
+<body>
+<main>
+  <h1>🎯 Radar de Noivas</h1>
+  <div class="sub">Versão 8 • prospecção privada + CRM • sem cadastro público</div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="radar">🔎 Radar</button>
+    <button class="tab" data-tab="dashboard">Dashboard</button>
+    <button class="tab" data-tab="loja">Minha loja</button>
+    <button class="tab" data-tab="leads">Leads</button>
+    <button class="tab" data-tab="ia">IA</button>
+    <button class="tab" data-tab="resultados">Resultados</button>
+  </div>
+
+  <div id="radar">
+    <div class="section-title">🔎 Encontrar possíveis clientes</div>
+    <div class="card">
+      <div class="note"><b>Modo particular da Quase Casados.</b> Esta versão organiza sinais que você inserir ou importar por meios autorizados. Ela <b>não acessa automaticamente seguidores de outras contas</b> e não solicita senha do Instagram.</div>
+
+      <label>📍 Região</label>
+      <div class="chips" id="regions">
+        <button class="chip on" data-value="Goiânia">Goiânia</button>
+        <button class="chip" data-value="Aparecida de Goiânia">Aparecida</button>
+        <button class="chip" data-value="Senador Canedo">Senador Canedo</button>
+        <button class="chip" data-value="Trindade">Trindade</button>
+      </div>
+
+      <label>💍 Sinais</label>
+      <div class="chips" id="signals">
+        <button class="chip on" data-value="Vestidos de noiva">👰 Vestidos</button>
+        <button class="chip on" data-value="Cartórios">🏛️ Cartórios</button>
+        <button class="chip" data-value="Cerimonial">💒 Cerimonial</button>
+        <button class="chip" data-value="Espaços">🏡 Espaços</button>
+        <button class="chip" data-value="Maquiadoras">💄 Maquiadoras</button>
+        <button class="chip" data-value="Fotógrafos">📸 Fotógrafos</button>
+      </div>
+
+      <label>🕘 Recência do sinal</label>
+      <select id="recency">
+        <option value="7">Últimos 7 dias</option>
+        <option value="30" selected>Últimos 30 dias</option>
+        <option value="90">Últimos 90 dias</option>
+      </select>
+
+      <div class="row">
+        <button class="btn" onclick="analyze()">🔥 Analisar oportunidades</button>
+        <button class="btn secondary" onclick="resetDemo()">↺ Demo</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">➕ Adicionar sinal autorizado</div>
+      <div class="grid">
+        <div><label>Nome/identificador</label><input id="pname" placeholder="@perfil ou nome"></div>
+        <div><label>Cidade</label><input id="pcity" placeholder="Goiânia"></div>
+      </div>
+      <div class="grid">
+        <div><label>Data do sinal</label><input id="pdate" type="date"></div>
+        <div><label>Origem</label>
+          <select id="porigin">
+            <option>Instagram (dados visíveis/autorizados)</option>
+            <option>Indicação</option><option>Contato direto</option><option>Importação CSV autorizada</option>
+          </select>
+        </div>
+      </div>
+      <label>Sinais identificados</label>
+      <div class="chips" id="newSignals">
+        <button class="chip on" data-value="Vestidos de noiva">👰 Vestidos</button>
+        <button class="chip" data-value="Cartórios">🏛️ Cartórios</button>
+        <button class="chip" data-value="Cerimonial">💒 Cerimonial</button>
+        <button class="chip" data-value="Espaços">🏡 Espaços</button>
+      </div>
+      <button class="btn" onclick="addLead()">Salvar lead</button>
+    </div>
+
+    <div class="section-title">✨ Oportunidades</div>
+    <div id="opportunities"></div>
+  </div>
+
+  <div id="dashboard" class="hidden">
+    <div class="section-title">📊 Dashboard</div>
+    <div class="stats">
+      <div class="stat"><b id="kLeads">0</b><span>Leads</span></div>
+      <div class="stat"><b id="kHot">0</b><span>Alta prioridade</span></div>
+      <div class="stat"><b id="kContact">0</b><span>Contatados</span></div>
+    </div>
+    <div class="card">
+      <div class="section-title">Funil</div>
+      <div class="kpi">Novos: <span id="fNew">0</span></div>
+      <div class="kpi">Em conversa: <span id="fTalk">0</span></div>
+      <div class="kpi">Agendamento: <span id="fMeet">0</span></div>
+      <div class="kpi">Fechados: <span id="fWon">0</span></div>
+    </div>
+  </div>
+
+  <div id="loja" class="hidden">
+    <div class="section-title">👗 Minha loja</div>
+    <div class="card">
+      <label>Nome</label><input id="storeName" value="Quase Casados">
+      <label>Posicionamento</label><textarea id="storePitch">Locação de vestidos de noiva e festa com preço único por categoria em Goiânia.</textarea>
+      <div class="grid">
+        <div><label>Linha premium</label><input value="R$ 1.599,99"></div>
+        <div><label>Linha civil</label><input value="R$ 499,99"></div>
+        <div><label>Moda festa</label><input value="R$ 499,99"></div>
+        <div><label>Daminhas</label><input value="R$ 239,99"></div>
+      </div>
+      <button class="btn" onclick="saveStore()">Salvar informações</button>
+    </div>
+  </div>
+
+  <div id="leads" class="hidden">
+    <div class="section-title">👥 Leads</div>
+    <div class="card">
+      <input id="searchLead" placeholder="Pesquisar por nome, cidade ou sinal" oninput="renderLeads()">
+    </div>
+    <div id="leadList"></div>
+  </div>
+
+  <div id="ia" class="hidden">
+    <div class="section-title">🤖 IA de abordagem</div>
+    <div class="card">
+      <label>Escolha o objetivo</label>
+      <select id="iaGoal">
+        <option>Primeiro contato</option>
+        <option>Retomar conversa</option>
+        <option>Convidar para experimentar vestidos</option>
+        <option>Apresentar preço único por categoria</option>
+      </select>
+      <label>Perfil do lead</label>
+      <select id="iaLead"></select>
+      <button class="btn" onclick="generateMessage()">✨ Gerar mensagem</button>
+      <hr>
+      <div id="iaOutput" class="note">A mensagem aparecerá aqui.</div>
+    </div>
+  </div>
+
+  <div id="resultados" class="hidden">
+    <div class="section-title">📈 Resultados</div>
+    <div class="card">
+      <div class="stats">
+        <div class="stat"><b id="rTotal">0</b><span>Total</span></div>
+        <div class="stat"><b id="rWon">0</b><span>Fechados</span></div>
+        <div class="stat"><b id="rRate">0%</b><span>Conversão</span></div>
+      </div>
+      <p class="note">Os dados ficam salvos localmente neste navegador. Não são enviados para outras pessoas nem criam cadastro público.</p>
+      <button class="btn danger" onclick="clearAll()">Apagar dados locais</button>
+    </div>
+  </div>
+
+  <div class="card note">🔒 <b>Privacidade:</b> use somente informações que você tenha autorização para consultar ou que sejam publicamente disponíveis e permitidas pelos serviços utilizados. Não informe senha do Instagram.</div>
+</main>
+
+<script>
+const KEY='radar_noivas_v8';
+let leads=JSON.parse(localStorage.getItem(KEY)||'null')||[
+ {id:1,name:'Possível cliente 01',city:'Goiânia',date:daysAgo(6),signals:['Vestidos de noiva','Cartórios'],origin:'Demo',score:96,status:'Novo',contacted:false},
+ {id:2,name:'Possível cliente 02',city:'Aparecida de Goiânia',date:daysAgo(12),signals:['Cerimonial'],origin:'Demo',score:78,status:'Novo',contacted:false},
+ {id:3,name:'Possível cliente 03',city:'Goiânia',date:daysAgo(27),signals:['Vestidos de noiva','Espaços'],origin:'Demo',score:87,status:'Em conversa',contacted:true}
+];
+
+function daysAgo(n){let d=new Date();d.setDate(d.getDate()-n);return d.toISOString().slice(0,10)}
+function save(){localStorage.setItem(KEY,JSON.stringify(leads));updateAll()}
+function selected(id){return [...document.querySelectorAll('#'+id+' .chip.on')].map(x=>x.dataset.value)}
+document.querySelectorAll('.chips').forEach(box=>box.addEventListener('click',e=>{
+ if(!e.target.classList.contains('chip'))return;
+ e.target.classList.toggle('on'); 
+}));
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');
+ document.querySelectorAll('main>div[id]').forEach(x=>x.classList.add('hidden'));
+ document.getElementById(t.dataset.tab).classList.remove('hidden');updateAll();
+});
+function scoreLead(signals,date,city){
+ let s=40;
+ s+=signals.includes('Vestidos de noiva')?25:0;
+ s+=signals.includes('Cartórios')?20:0;
+ s+=signals.includes('Cerimonial')?10:0;
+ s+=signals.includes('Espaços')?7:0;
+ const age=Math.floor((Date.now()-new Date(date))/86400000);
+ s+=age<=7?15:age<=30?8:0;
+ s+=city==='Goiânia'?5:0;
+ return Math.min(100,s);
+}
+function analyze(){
+ const rs=selected('regions'), ss=selected('signals'), days=+document.getElementById('recency').value;
+ const filtered=leads.filter(l=>{
+  const age=Math.floor((Date.now()-new Date(l.date))/86400000);
+  return rs.includes(l.city)||(l.city==='Aparecida de Goiânia'&&rs.includes('Aparecida de Goiânia')) ?
+   age<=days && l.signals.some(s=>ss.includes(s)) : false;
+ });
+ renderOpportunities(filtered.length?filtered:leads.filter(l=>l.date&&Math.floor((Date.now()-new Date(l.date))/86400000)<=days));
+}
+function renderOpportunities(list=leads){
+ const el=document.getElementById('opportunities');
+ if(!list.length){el.innerHTML='<div class="card empty">Nenhuma oportunidade encontrada.</div>';return}
+ el.innerHTML=list.sort((a,b)=>b.score-a.score).map(l=>leadCard(l,true)).join('');
+}
+function leadCard(l,withAction=false){
+ const cls=l.score>=90?'hot':l.score>=75?'warm':'low';
+ return `<div class="card">
+  <div class="lead-top"><div><div class="name">${esc(l.name)}</div><div class="city">📍 ${esc(l.city)} • sinal em ${brDate(l.date)}</div></div><div class="score ${cls}">${l.score}/100</div></div>
+  <div>${l.signals.map(s=>`<span class="badge">${esc(s)}</span>`).join('')}</div>
+  <div class="small">Origem: ${esc(l.origin)} • Status: ${esc(l.status)}</div>
+  ${l.note?`<p class="note">${esc(l.note)}</p>`:''}
+  ${withAction?`<div class="actions"><button class="btn" onclick="contactLead(${l.id})">${l.contacted?'✓ Contatado':'📲 Marcar contato'}</button><button class="btn secondary" onclick="openIA(${l.id})">🤖 Abordagem</button></div>`:''}
+ </div>`;
+}
+function addLead(){
+ const name=document.getElementById('pname').value.trim()||'Novo possível cliente';
+ const city=document.getElementById('pcity').value.trim()||'Goiânia';
+ const date=document.getElementById('pdate').value||new Date().toISOString().slice(0,10);
+ const signals=selected('newSignals');
+ if(!signals.length){alert('Escolha pelo menos um sinal.');return}
+ const l={id:Date.now(),name,city,date,signals,origin:document.getElementById('porigin').value,score:scoreLead(signals,date,city),status:'Novo',contacted:false};
+ leads.push(l);save();renderOpportunities();alert('Lead salvo no Radar.');
+}
+function contactLead(id){let l=leads.find(x=>x.id===id);if(!l)return;l.contacted=true;l.status=l.status==='Novo'?'Em conversa':l.status;save();renderOpportunities()}
+function renderLeads(){
+ const q=(document.getElementById('searchLead').value||'').toLowerCase();
+ const list=leads.filter(l=>(l.name+' '+l.city+' '+l.signals.join(' ')).toLowerCase().includes(q));
+ document.getElementById('leadList').innerHTML=list.length?list.map(l=>leadCard(l,true)).join(''):'<div class="card empty">Nenhum lead encontrado.</div>';
+}
+function openIA(id){document.querySelector('[data-tab="ia"]').click();document.getElementById('iaLead').value=id;generateMessage()}
+function generateMessage(){
+ const l=leads.find(x=>x.id==document.getElementById('iaLead').value);
+ if(!l){document.getElementById('iaOutput').textContent='Cadastre um lead para gerar uma abordagem.';return}
+ const goal=document.getElementById('iaGoal').value;
+ let msg='';
+ if(goal==='Primeiro contato') msg=`Oi! Tudo bem? 💕 Vi que você está em ${l.city} e resolvi te chamar porque estou com uma seleção linda de vestidos na Quase Casados. Se você estiver organizando seu casamento, posso te mostrar algumas opções sem compromisso.`;
+ if(goal==='Retomar conversa') msg=`Oi! 💕 Passando para saber como estão os preparativos do casamento. Se você ainda estiver procurando o vestido, posso separar algumas opções da Quase Casados para você conhecer.`;
+ if(goal==='Convidar para experimentar vestidos') msg=`Oi! 💕 Queria te fazer um convite: venha experimentar alguns vestidos na Quase Casados. Posso te ajudar a encontrar modelos que combinem com o estilo que você imaginou para o seu grande dia.`;
+ if(goal==='Apresentar preço único por categoria') msg=`Oi! 💕 Aqui na Quase Casados trabalhamos com preço único por categoria, então você consegue experimentar os modelos e já sabe exatamente o valor da locação. Se quiser, posso te explicar como funciona.`;
+ document.getElementById('iaOutput').textContent=msg;
+}
+function updateAll(){
+ document.getElementById('kLeads').textContent=leads.length;
+ document.getElementById('kHot').textContent=leads.filter(l=>l.score>=90).length;
+ document.getElementById('kContact').textContent=leads.filter(l=>l.contacted).length;
+ document.getElementById('fNew').textContent=leads.filter(l=>l.status==='Novo').length;
+ document.getElementById('fTalk').textContent=leads.filter(l=>l.status==='Em conversa').length;
+ document.getElementById('fMeet').textContent=leads.filter(l=>l.status==='Agendamento').length;
+ document.getElementById('fWon').textContent=leads.filter(l=>l.status==='Fechado').length;
+ document.getElementById('rTotal').textContent=leads.length;
+ const won=leads.filter(l=>l.status==='Fechado').length;
+ document.getElementById('rWon').textContent=won;
+ document.getElementById('rRate').textContent=leads.length?Math.round(won/leads.length*100)+'%':'0%';
+ document.getElementById('iaLead').innerHTML=leads.map(l=>`<option value="${l.id}">${esc(l.name)} — ${esc(l.city)}</option>`).join('');
+ renderLeads();renderOpportunities();
+}
+function resetDemo(){localStorage.removeItem(KEY);location.reload()}
+function clearAll(){if(confirm('Apagar todos os leads e dados locais?')){localStorage.removeItem(KEY);leads=[];updateAll();renderOpportunities()}}
+function saveStore(){alert('Informações da loja salvas nesta sessão.')}
+function brDate(s){if(!s)return'';return new Date(s+'T12:00:00').toLocaleDateString('pt-BR')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+updateAll();analyze();
+</script>
+</body>
+</html>
